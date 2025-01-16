@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Radyo | Online Radyonun Kralı</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #78acc0;
+      --background-color: #372042;
+      --text-color: #ffffff;
+      --item-background: #2a2a2a;
+      --item-hover: #143868;
+      --active-color: #3182ce;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #181818;
+      color: var(--text-color);
+      padding: 24px 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .logo h1 {
+      font-size: 2rem;
+      color: var(--primary-color);
+    }
+
+    .radioList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 80px;
+    }
+
+    .radioItem {
+      padding: 20px 10px;
+      text-align: center;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-size: 16px;
+      background-color: var(--item-background);
+      color: var(--text-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .radioItem:hover {
+      transform: translateY(-5px);
+      background-color: var(--item-hover);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .radioItem.activeRadio {
+      background-color: var(--active-color);
+      color: white;
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 25px;
+      background-color: white;
+      padding: 24px;
+      border-radius: 17px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .controlBtn {
+      background-color: var(--item-background);
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 12px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      color: var(--primary-color);
+    }
+
+    .controlBtn:hover {
+      background-color: var(--item-hover);
+      transform: scale(1.1);
+    }
+
+    .controlBtn i {
+      font-size: 24px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .radioList {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+
+      .controls {
+        padding: 12px;
+      }
+
+      .controlBtn {
+        padding: 12px;
+      }
+
+      .controlBtn i {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <h1>RADYO ONLİNE</h1>
+  </div>
+
+  <div class="radioList"></div>
+
+  <div class="controls">
+    <button class="controlBtn" id="prevBtn" aria-label="Previous">
+      <i class="fas fa-step-backward"></i>
+    </button>
+    <button class="controlBtn" id="playPauseBtn" aria-label="Play/Pause">
+      <i class="fas fa-play"></i>
+    </button>
+    <button class="controlBtn" id="nextBtn" aria-label="Next">
+      <i class="fas fa-step-forward"></i>
+    </button>
+  </div>
+
+  <script>
+    const radioList = {
+      "90'Lar": "http://37.247.98.8/stream/166/",
+      "Ada FM": "http://adafm.net:6262/; ",
+      "NUMBER1 90LAR": "https://n10101m.mediatriple.net/numberone90s",
+      "NUMBER1 TÜRK": "https://n10101m.mediatriple.net/numberoneturk ",
+      "ADANA RADYO DEVA": "https://ssl123.ozelip.com/8108/stream",
+      "AFŞİN FM": "https://radyo.arkacadde.org/4646/afsinradyo.mp3 ",
+      "AFYON GÜN FM": "https://ssl120.radyotelekom.com.tr/8130/stream",
+      "Kral FM": "http://46.20.3.204/",
+      "SHOW FM": "http://46.20.3.229/",
+      "EGM FM": "https://m.egm.gov.tr:8093/; ",
+      "AKDAĞ FM": " http://radyovetv.com:7051/;  ",
+      "AHISKA FM": "  http://radyo.ahiska.net:8063/;",
+      "Alem FM": "http://37.247.98.7/;",
+      "BARTIN FM": "https://radyo.yayin.com.tr:5918/;",
+      "BEST FM": "http://46.20.7.125/ ",
+      "BURSA FM": " http://yayin.bursafm.com.tr:1055/;",
+      "DAMAR FM": "https://yayin.damarfm.com:8080/;",
+      "BANT FM": " https://bantfm.80.yayin.com.tr/;",
+      "AŞK FM": "http://yayin.asymedya.com:8020/1",
+      "DOST FM": "http://yayin.netyayin.net:1515/;",
+      "DREAM TURK": "https://radyo.duhnet.tv/dreamturk",
+      "GÖZDE FM": "https://gozdefm.80.yayin.com.tr/; ",
+      "iLAHİ FM": "http://yayin1.canliyayin.org:8700/",
+      "GÜL FM": "http://yayin2.canliyayin.org:8866/;",
+      "GURBET FM": "https://radyo1.radyo-dinle.tc:7009/;"
+    };
+
+    let currentAudio = new Audio();
+    let currentItem = null;
+    let currentIndex = -1;
+    let isPlaying = false;
+
+    const radioListElement = document.querySelector(".radioList");
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    function createRadioItems() {
+      Object.entries(radioList).forEach(([name, url], index) => {
+        const itemBox = document.createElement("div");
+        itemBox.className = "radioItem";
+        itemBox.dataset.url = url;
+        itemBox.dataset.index = index;
+        itemBox.textContent = name;
+        radioListElement.appendChild(itemBox);
+      });
+    }
+
+    function playAudio(url, index) {
+      currentAudio.src = url;
+      currentAudio.play();
+      isPlaying = true;
+      currentIndex = index;
+      updatePlayPauseIcon();
+    }
+
+    function stopAudio() {
+      currentAudio.pause();
+      isPlaying = false;
+      updatePlayPauseIcon();
+      if (currentItem) {
+        currentItem.classList.remove("activeRadio");
+      }
+    }
+
+    function updatePlayPauseIcon() {
+      playPauseBtn.innerHTML = isPlaying 
+        ? '<i class="fas fa-pause"></i>' 
+        : '<i class="fas fa-play"></i>';
+    }
+
+    function playNext() {
+      currentIndex = (currentIndex + 1) % Object.keys(radioList).length;
+      const nextItem = radioListElement.querySelector(`[data-index="${currentIndex}"]`);
+      if (nextItem) {
+        stopAudio();
+        currentItem = nextItem;
+        playAudio(nextItem.dataset.url, currentIndex);
+        nextItem.classList.add("activeRadio");
+      }
+    }
+
+    function playPrevious() {
+      currentIndex = (currentIndex - 1 + Object.keys(radioList).length) % Object.keys(radioList).length;
+      const prevItem = radioListElement.querySelector(`[data-index="${currentIndex}"]`);
+      if (prevItem) {
+        stopAudio();
+        currentItem = prevItem;
+        playAudio(prevItem.dataset.url, currentIndex);
+        prevItem.classList.add("activeRadio");
+      }
+    }
+
+    radioListElement.addEventListener("click", (event) => {
+      const clickedItem = event.target.closest(".radioItem");
+      if (clickedItem) {
+        stopAudio();
+        currentItem = clickedItem;
+        playAudio(clickedItem.dataset.url, parseInt(clickedItem.dataset.index));
+        clickedItem.classList.add("activeRadio");
+      }
+    });
+
+    playPauseBtn.addEventListener("click", () => {
+      if (isPlaying) {
+        stopAudio();
+      } else if (currentItem) {
+        playAudio(currentItem.dataset.url, currentIndex);
+        currentItem.classList.add("activeRadio");
+      } else {
+        playNext();
+      }
+    });
+
+    prevBtn.addEventListener("click", playPrevious);
+    nextBtn.addEventListener("click", playNext);
+
+    createRadioItems();
+  </script>
+</body>
+</html>
